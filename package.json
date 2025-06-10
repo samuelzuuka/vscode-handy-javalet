@@ -1,0 +1,210 @@
+{
+  "name": "vscode-handy-javalet",
+  "displayName": "Handy Javalet",
+  "description": "vscode插件,提供便捷的Java开发小工具集合,实现idea类似的快捷功能",
+  "version": "0.0.1",
+  "publisher": "samuelzuuka",
+  "author": {
+    "name": "Samuel Zuuka"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samuelzuuka/vscode-handy-javalet.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "java",
+    "arthas",
+    "development",
+    "tools",
+    "vscode",
+    "arthas",
+    "javalet"
+  ],
+  "icon": "resources/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:java"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "javalet.showDoc",
+        "title": "javalet:显示Javalet文档"
+      },
+      {
+        "command": "javalet.compileJavaFile",
+        "title": "javalet:编译Java文件"
+      },
+      {
+        "command": "javalet.copyReference",
+        "title": "javalet:复制引用"
+      },
+      {
+        "command": "javalet.copyPath",
+        "title": "javalet:复制文件路径"
+      },
+      {
+        "command": "javalet.arthasWatch",
+        "title": "javalet:Arthas Watch"
+      },
+      {
+        "command": "javalet.arthasJad",
+        "title": "javalet:Arthas Decompile Jad"
+      },
+      {
+        "command": "javalet.arthasTrace",
+        "title": "javalet:Arthas Trace"
+      },
+      {
+        "command": "javalet.arthasSc",
+        "title": "javalet:Arthas Sc"
+      },
+      {
+        "command": "javalet.arthasSm",
+        "title": "javalet:Arthas Sm"
+      },
+      {
+        "command": "javalet.arthasStack",
+        "title": "javalet:Arthas Stack"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceLangId == java",
+          "command": "javalet.compileJavaFile",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == java",
+          "submenu": "javalet.copySubmenu",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == java",
+          "submenu": "javalet.arthasSubmenu",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId == java",
+          "command": "javalet.arthasStack",
+          "group": "javalet.arthasGroup"
+        }
+      ],
+      "javalet.copySubmenu": [
+        {
+          "command": "javalet.copyReference",
+          "group": "1_copy@1",
+          "when": "resourceLangId == java"
+        },
+        {
+          "command": "javalet.copyPath",
+          "group": "1_copy@2",
+          "when": "resourceLangId == java"
+        }
+      ],
+      "javalet.arthasSubmenu": [
+        {
+          "command": "javalet.arthasWatch",
+          "group": "1_arthas@1",
+          "when": "resourceLangId == java"
+        },
+        {
+          "command": "javalet.arthasJad",
+          "group": "1_arthas@2",
+          "when": "resourceLangId == java"
+        },
+        {
+          "command": "javalet.arthasTrace",
+          "group": "1_arthas@3",
+          "when": "resourceLangId == java"
+        },
+        {
+          "command": "javalet.arthasSc",
+          "group": "1_arthas@4",
+          "when": "resourceLangId == java"
+        },
+        {
+          "command": "javalet.arthasSm",
+          "group": "1_arthas@5",
+          "when": "resourceLangId == java"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "javalet.showDoc",
+          "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.compileJavaFile",
+          "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.copyReference",
+          "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.copyPath",
+          "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.arthasWatch",
+          "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.arthasJad",
+          "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.arthasTrace",
+          "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.arthasSc",
+          "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.arthasSm",
+          "when": "editorLangId == java"
+        }
+      ]
+    },
+    "submenus": [
+      {
+        "id": "javalet.copySubmenu",
+        "label": "javalet:高级复制"
+      },
+      {
+        "id": "javalet.arthasSubmenu",
+        "label": "javalet:Arthas命令"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "18.x",
+    "@types/mocha": "^10.0.6",
+    "@types/glob": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "mocha": "^10.2.0",
+    "glob": "^10.3.10"
+  }
+}
