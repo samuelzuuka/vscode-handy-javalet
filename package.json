@@ -21,7 +21,7 @@
     "arthas",
     "javalet"
   ],
-  "icon": "resources/icon.png",
+  "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.85.0"
   },
