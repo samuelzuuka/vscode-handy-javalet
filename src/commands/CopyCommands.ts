@@ -35,7 +35,6 @@ export class CopyPathCommand extends BaseCommand {
 }
 
 export class CopyClassPathCommand extends BaseCommand {
-
     async execute() {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
@@ -50,28 +49,34 @@ export class CopyClassPathCommand extends BaseCommand {
         // 获取Java文件的完整路径
         const javaFilePath = document.uri.fsPath;
         
-        // 计算对应的class文件路径
-        // 1. 获取src或者源代码目录
+        // 1. 查找Maven项目根目录
+        const mavenRoot = this.findMavenProjectRoot(javaFilePath);
+        if (!mavenRoot) {
+            vscode.window.showErrorMessage('无法找到Maven项目根目录（包含pom.xml的目录）');
+            return;
+        }
+
+        // 2. 获取src目录
         const srcPath = this.findSourceRoot(javaFilePath);
         if (!srcPath) {
             vscode.window.showErrorMessage('无法确定源代码根目录');
             return;
         }
 
-        // 2. 计算class文件路径
+        // 3. 计算class文件路径
         const relativePath = path.relative(srcPath, javaFilePath);
         const classPath = path.join(
-            path.dirname(srcPath), 
-            'target/classes', 
+            mavenRoot,
+            'target/classes',
             relativePath.replace('.java', '.class')
         );
 
-        // 3. 复制到剪贴板
+        // 4. 复制到剪贴板
         await vscode.env.clipboard.writeText(classPath);
         
-        // 4. 检查文件是否存在
+        // 5. 检查文件是否存在
         if (fs.existsSync(classPath)) {
-            // 5. 根据操作系统打开文件所在目录
+            // 6. 根据操作系统打开文件所在目录
             this.openInFileExplorer(classPath);
             vscode.window.showInformationMessage('Class文件路径已复制，并打开所在目录');
         } else {
@@ -79,12 +84,29 @@ export class CopyClassPathCommand extends BaseCommand {
         }
     }
 
+    private findMavenProjectRoot(filePath: string): string | null {
+        let dir = path.dirname(filePath);
+        // 向上查找直到找到包含pom.xml的目录或到达根目录
+        while (dir !== path.dirname(dir)) { // 当dir等于其父目录时，说明已到达根目录
+            const pomPath = path.join(dir, 'pom.xml');
+            if (fs.existsSync(pomPath)) {
+                return dir;
+            }
+            dir = path.dirname(dir);
+        }
+        return null;
+    }
+
     private findSourceRoot(filePath: string): string | null {
         let dir = path.dirname(filePath);
         while (dir !== path.dirname(dir)) {
-            if (path.basename(dir) === 'src' || 
-                path.basename(dir) === 'java' || 
-                path.basename(dir) === 'main') {
+            const baseName = path.basename(dir);
+            // 优先匹配Maven标准目录结构
+            if (baseName === 'java' && path.basename(path.dirname(dir)) === 'main') {
+                return dir;
+            }
+            // 其次匹配src目录
+            if (baseName === 'src') {
                 return dir;
             }
             dir = path.dirname(dir);
