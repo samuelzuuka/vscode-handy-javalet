@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as cp from 'child_process';
 import { JavaletDocPanel } from './webview';
-import { CopyReferenceCommand, CopyPathCommand } from './commands/CopyCommands';
+import { CopyReferenceCommand, CopyPathCommand, CopyClassPathCommand } from './commands/CopyCommands';
 import { 
     ArthasWatchCommand,
     ArthasJadCommand,
@@ -66,6 +66,15 @@ export function activate(context: vscode.ExtensionContext) {
         await new CopyPathCommand(editor).execute();
     });
 
+    // 复制类路径
+    let copyClassPath = vscode.commands.registerCommand('javalet.copyClassPath', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor || editor.document.languageId !== 'java') {
+            return;
+        }
+        new CopyClassPathCommand(editor).execute();
+    });
+
     // Arthas Watch 命令
     let arthasWatch = vscode.commands.registerCommand('javalet.arthasWatch', async () => {
         const editor = vscode.window.activeTextEditor;
@@ -125,6 +134,7 @@ export function activate(context: vscode.ExtensionContext) {
         compileJavaFile,
         copyReference,
         copyPath,
+        copyClassPath,
         arthasWatch,
         arthasJad,
         arthasTrace,

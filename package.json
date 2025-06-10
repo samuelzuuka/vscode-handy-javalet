@@ -2,7 +2,7 @@
   "name": "vscode-handy-javalet",
   "displayName": "Handy Javalet",
   "description": "vscode插件,提供便捷的Java开发小工具集合,实现idea类似的快捷功能",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "publisher": "samuelzuuka",
   "author": {
     "name": "Samuel Zuuka"
@@ -51,6 +51,10 @@
         "title": "javalet:复制文件路径"
       },
       {
+        "command": "javalet.copyClassPath",
+        "title": "javalet:复制class文件路径"
+      },
+      {
         "command": "javalet.arthasWatch",
         "title": "javalet:Arthas Watch"
       },
@@ -91,11 +95,6 @@
           "when": "resourceLangId == java",
           "submenu": "javalet.arthasSubmenu",
           "group": "navigation"
-        },
-        {
-          "when": "resourceLangId == java",
-          "command": "javalet.arthasStack",
-          "group": "javalet.arthasGroup"
         }
       ],
       "javalet.copySubmenu": [
@@ -108,6 +107,11 @@
           "command": "javalet.copyPath",
           "group": "1_copy@2",
           "when": "resourceLangId == java"
+        },
+        {
+          "when": "resourceLangId == java",
+          "command": "javalet.copyClassPath",
+          "group": "1_copy@3"
         }
       ],
       "javalet.arthasSubmenu": [
@@ -135,12 +139,16 @@
           "command": "javalet.arthasSm",
           "group": "1_arthas@5",
           "when": "resourceLangId == java"
+        },
+        {
+          "command": "javalet.arthasStack",
+          "group": "1_arthas@6",
+          "when": "resourceLangId == java"
         }
       ],
       "commandPalette": [
         {
-          "command": "javalet.showDoc",
-          "when": "editorLangId == java"
+          "command": "javalet.showDoc"
         },
         {
           "command": "javalet.compileJavaFile",
@@ -152,6 +160,10 @@
         },
         {
           "command": "javalet.copyPath",
+          "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.copyClassPath",
           "when": "editorLangId == java"
         },
         {
@@ -172,6 +184,10 @@
         },
         {
           "command": "javalet.arthasSm",
+          "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.arthasStack",
           "when": "editorLangId == java"
         }
       ]
