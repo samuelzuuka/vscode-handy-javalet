@@ -12,6 +12,7 @@ import {
     ArthasSmCommand,
     ArthasStackCommand
 } from './commands/ArthasCommands';
+import { StackTraceView } from './views/StackTraceView';
 
 export function activate(context: vscode.ExtensionContext) {
     // 显示文档面板命令
@@ -129,6 +130,28 @@ export function activate(context: vscode.ExtensionContext) {
         await new ArthasStackCommand(editor).execute();
     });
 
+    // 堆栈分析命令
+    let stackTraceView: StackTraceView | undefined;
+    let analyzeStackTrace = vscode.commands.registerCommand('javalet.analyzeStackTrace', () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            return;
+        }
+
+        const selection = editor.selection;
+        const text = editor.document.getText(selection);
+        
+        if (!text.trim()) {
+            vscode.window.showErrorMessage('请先选择堆栈信息');
+            return;
+        }
+        if (!stackTraceView) {
+            stackTraceView = new StackTraceView(context);
+        }
+        
+        stackTraceView.show(text);
+    });
+
     context.subscriptions.push(
         showDoc,
         compileJavaFile,
@@ -140,7 +163,8 @@ export function activate(context: vscode.ExtensionContext) {
         arthasTrace,
         arthasSc,
         arthasSm,
-        arthasStack
+        arthasStack,
+        analyzeStackTrace
     );
 }
 

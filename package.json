@@ -77,8 +77,21 @@
       {
         "command": "javalet.arthasStack",
         "title": "javalet:Arthas Stack"
+      },
+      {
+        "command": "javalet.analyzeStackTrace",
+        "title": "javalet:分析堆栈信息"
       }
     ],
+    "views": {
+      "explorer": [
+        {
+          "id": "javaletStackTrace",
+          "name": "Java堆栈分析",
+          "type": "webview"
+        }
+      ]
+    },
     "menus": {
       "editor/context": [
         {
@@ -94,6 +107,10 @@
         {
           "when": "resourceLangId == java",
           "submenu": "javalet.arthasSubmenu",
+          "group": "navigation"
+        },
+        {
+          "command": "javalet.ideaSubmenu",
           "group": "navigation"
         }
       ],
@@ -146,6 +163,12 @@
           "when": "resourceLangId == java"
         }
       ],
+      "javalet.ideaSubmenu": [
+        {
+          "command": "javalet.analyzeStackTrace",
+          "group": "1_idea@1"
+        }
+      ],
       "commandPalette": [
         {
           "command": "javalet.showDoc"
@@ -189,6 +212,9 @@
         {
           "command": "javalet.arthasStack",
           "when": "editorLangId == java"
+        },
+        {
+          "command": "javalet.analyzeStackTrace"
         }
       ]
     },

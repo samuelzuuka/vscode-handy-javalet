@@ -18,8 +18,7 @@ export class ArthasWatchCommand extends BaseCommand {
 export class ArthasJadCommand extends BaseCommand {
     async execute(): Promise<void> {
         const className = this.getFullClassName();
-        const methodName = this.getCurrentMethodName();
-        const command = `jad --source-only ${className} ${methodName}`;
+        const command = `jad --source-only ${className}`;
         await this.copyToClipboard(command);
     }
 }
