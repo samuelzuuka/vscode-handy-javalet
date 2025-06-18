@@ -4,13 +4,19 @@ import * as path from 'path';
 export class StackTraceView {
     private static readonly viewType = 'javaletStackTrace';
     private panel: vscode.WebviewPanel | undefined;
+    private outputChannel: vscode.OutputChannel;
 
-    constructor(private context: vscode.ExtensionContext) {}
+    constructor(private context: vscode.ExtensionContext) {
+        this.outputChannel = vscode.window.createOutputChannel('Java Stack Trace');
+    }
 
     public async show(stackTrace: string) {
+        // 输出到Debug Console
+        this.outputToDebugConsole(stackTrace);
+
         // 如果面板已存在，显示它
         if (this.panel) {
-            this.panel.reveal();
+            this.panel.reveal(vscode.ViewColumn.Two, true);  // 保持在底部
             this.updateContent(stackTrace);
             return;
         }
@@ -19,12 +25,25 @@ export class StackTraceView {
         this.panel = vscode.window.createWebviewPanel(
             StackTraceView.viewType,
             'Java堆栈分析',
-            vscode.ViewColumn.Two,
+            {
+                viewColumn: vscode.ViewColumn.Two,
+                preserveFocus: true
+            },
             {
                 enableScripts: true,
                 retainContextWhenHidden: true
             }
         );
+
+        // 设置面板高度为编辑器高度的1/3
+        this.panel.webview.html = `
+            <style>
+                body {
+                    max-height: 33vh;
+                    overflow-y: auto;
+                }
+            </style>
+        `;
 
         // 设置HTML内容
         this.updateContent(stackTrace);
@@ -42,6 +61,32 @@ export class StackTraceView {
         this.panel.onDidDispose(() => {
             this.panel = undefined;
         });
+    }
+
+    private outputToDebugConsole(stackTrace: string) {
+        // 清空之前的输出
+        this.outputChannel.clear();
+        
+        // 添加时间戳和分隔线
+        const timestamp = new Date().toLocaleString();
+        this.outputChannel.appendLine('='.repeat(80));
+        this.outputChannel.appendLine(`Stack Trace Analysis (${timestamp})`);
+        this.outputChannel.appendLine('='.repeat(80));
+        
+        // 输出堆栈信息
+        const frames = this.parseStackTrace(stackTrace);
+        frames.forEach((frame, index) => {
+            if (frame.file) {
+                this.outputChannel.appendLine(`[${index + 1}] ${frame.method} (${frame.file}:${frame.line})`);
+            } else {
+                this.outputChannel.appendLine(`[${index + 1}] ${frame.method}`);
+            }
+        });
+        
+        this.outputChannel.appendLine('='.repeat(80));
+        
+        // 显示输出通道
+        this.outputChannel.show(true);
     }
 
     private updateContent(stackTrace: string) {
@@ -91,6 +136,9 @@ export class StackTraceView {
                         background-color: var(--vscode-editor-background);
                         color: var(--vscode-editor-foreground);
                         padding: 10px;
+                        max-height: 33vh;
+                        overflow-y: auto;
+                        margin: 0;
                     }
                     .stack-frame {
                         padding: 5px;

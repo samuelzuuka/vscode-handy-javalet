@@ -132,23 +132,15 @@ export function activate(context: vscode.ExtensionContext) {
 
     // 堆栈分析命令
     let stackTraceView: StackTraceView | undefined;
-    let analyzeStackTrace = vscode.commands.registerCommand('javalet.analyzeStackTrace', () => {
-        const editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            return;
-        }
-
-        const selection = editor.selection;
-        const text = editor.document.getText(selection);
-        
+    let analyzeStackTrace = vscode.commands.registerCommand('javalet.analyzeStackTrace', async () => {
+        const text = await vscode.env.clipboard.readText();
         if (!text.trim()) {
-            vscode.window.showErrorMessage('请先选择堆栈信息');
+            vscode.window.showErrorMessage('剪贴板中没有堆栈信息');
             return;
         }
         if (!stackTraceView) {
             stackTraceView = new StackTraceView(context);
         }
-        
         stackTraceView.show(text);
     });
 

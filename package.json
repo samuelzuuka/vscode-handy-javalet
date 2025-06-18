@@ -2,7 +2,7 @@
   "name": "vscode-handy-javalet",
   "displayName": "Handy Javalet",
   "description": "vscode插件,提供便捷的Java开发小工具集合,实现idea类似的快捷功能",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "publisher": "samuelzuuka",
   "author": {
     "name": "Samuel Zuuka"
@@ -110,7 +110,7 @@
           "group": "navigation"
         },
         {
-          "command": "javalet.ideaSubmenu",
+          "submenu": "javalet.ideaSubmenu",
           "group": "navigation"
         }
       ],
@@ -226,6 +226,10 @@
       {
         "id": "javalet.arthasSubmenu",
         "label": "javalet:Arthas命令"
+      },
+      {
+        "id": "javalet.ideaSubmenu",
+        "label": "javalet:Idea命令"
       }
     ]
   },
